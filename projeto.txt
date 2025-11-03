@@ -1,1 +1,2 @@
-Exercicio de pipeline da disciplina de tendencias
+Alteração feita na feature nova-funcionalidade
+

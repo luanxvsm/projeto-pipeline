@@ -1,0 +1,28 @@
+name: Pipeline de Exemplo
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Verifica se o arquivo existe
+        run: |
+          if [ -f "projeto.txt" ]; then
+            echo "✅ Arquivo projeto.txt encontrado!"
+          else
+            echo "❌ Arquivo projeto.txt não encontrado!"
+            exit 1
+          fi
+
+      - name: Exibir conteúdo do arquivo
+        run: cat projeto.txt

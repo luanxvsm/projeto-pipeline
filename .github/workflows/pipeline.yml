@@ -1,4 +1,4 @@
-name: Pipeline de Exemplo
+name: Pipeline com SAST e DAST
 
 on:
   push:
@@ -9,13 +9,14 @@ on:
 
 jobs:
   build:
+    name: 🏗️ Build e Validação Básica
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Verifica se o arquivo existe
+      - name: Verifica se o arquivo projeto.txt existe
         run: |
           if [ -f "projeto.txt" ]; then
             echo "✅ Arquivo projeto.txt encontrado!"
@@ -24,5 +25,42 @@ jobs:
             exit 1
           fi
 
-      - name: Exibir conteúdo do arquivo
+      - name: Exibe o conteúdo do arquivo
         run: cat projeto.txt
+
+  sast:
+    name: 🧩 SAST - Análise Estática de Segurança
+    runs-on: ubuntu-latest
+    needs: build   # Só roda depois do build
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Simulação de varredura SAST
+        run: |
+          echo "🔍 Iniciando análise SAST (estática)..."
+          # Exemplo simbólico de busca por código inseguro
+          if grep -q "senha" projeto.txt; then
+            echo "❌ Vulnerabilidade detectada: palavra 'senha' encontrada!"
+            exit 1
+          else
+            echo "✅ Nenhum problema de segurança estático encontrado."
+          fi
+
+  dast:
+    name: 🧪 DAST - Teste Dinâmico de Segurança
+    runs-on: ubuntu-latest
+    needs: sast   # Só roda após o SAST
+    steps:
+      - name: Simulação de varredura DAST
+        run: |
+          echo "🌐 Iniciando análise DAST (dinâmica)..."
+          # Aqui poderíamos rodar algo como OWASP ZAP (simulação)
+          # Vamos apenas simular uma verificação de vulnerabilidade
+          RESPONSE_CODE=200
+          if [ "$RESPONSE_CODE" -eq 200 ]; then
+            echo "✅ Aplicação respondeu corretamente. Nenhuma vulnerabilidade crítica encontrada."
+          else
+            echo "❌ Falha detectada na resposta da aplicação!"
+            exit 1
+          fi
